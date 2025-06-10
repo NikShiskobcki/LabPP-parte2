@@ -36,8 +36,8 @@ string ingresoTexto(){
 	textoAux.largo=i;
 	return textoAux;
 }
-	
-int buscarAlias(string auxAlias, usuario usuarios[],int &pos){
+
+int buscarAlias(string auxAlias, usuario usuarios[],int pos){
 	int index=-1;
 	for (int i = 0; i<pos;i++){
 		if (strcmp(usuarios[i].datos.alias.texto, auxAlias.texto) == 0){
@@ -47,34 +47,38 @@ int buscarAlias(string auxAlias, usuario usuarios[],int &pos){
 	}
 	return index;
 }
-	
-bool ciValida(documento ci){
-	int dVerificador= (ci.numero[0]*2)+
+
+bool ciValida(documento ci, int i){
+	if (i==8){
+		int dVerificador= (ci.numero[0]*2)+
 						(ci.numero[1]*9)+
 						(ci.numero[2]*8)+
 						(ci.numero[3]*7)+
 						(ci.numero[4]*6)+
 						(ci.numero[5]*3)+
 						(ci.numero[6]*4);
-	dVerificador = dVerificador % 10;
-	if (dVerificador == ci.numero[7]){
+		dVerificador = dVerificador % 10;
+		if (dVerificador == ci.numero[7]){
 		return true;
-	}else{
-		printf("Cedula no valida, vuelva a ingresarla de manera correcta\n");
-		return false;
+		}
 	}
+	printf("Cedula no valida, vuelva a ingresarla de manera correcta\n");
+	return false;
 }
-	
+
 documento ingresoCi(){
-	__fpurge(stdin);
 	documento ciAux;
+	int i;
 	do{
-		for (int i=0;i<8;i++){
+		__fpurge(stdin);
+		for (i=0;i<8;i++){
 			ciAux.numero[i] = getchar();
+			if (ciAux.numero[i]=='\n'){
+				break;
+			}
 			ciAux.numero[i]-=48;
 		}
-		__fpurge(stdin);
-	}while (!ciValida(ciAux));
+	}while (!ciValida(ciAux,i));
 
 	ciAux.largo=8;
 	return ciAux;
@@ -113,7 +117,7 @@ bool fechaValida(fecha fAux){
 	}
 	return valida;
 }
-	
+
 fecha ingresoFecha(){
 	fecha fAux;
 	do{
@@ -121,7 +125,7 @@ fecha ingresoFecha(){
 	}while(!fechaValida(fAux));
 	return fAux;
 }
-	
+
 bool confirmar(){
 	__fpurge(stdin);
 	char c;
@@ -133,7 +137,7 @@ bool confirmar(){
 		return false;
 	}
 }
-	
+
 void mostrarUsuario(usuario usuarios[], int pos){
 	printf("\nAlias: ");
 	for (int i=0;i< usuarios[pos].datos.alias.largo;i++){
@@ -153,10 +157,10 @@ void mostrarUsuario(usuario usuarios[], int pos){
 	}
 	printf("\nFecha de Nacimiento: ");
 	printf("%d/%d/%d",usuarios[pos].datos.fechaNacimiento.dia,
-						usuarios[pos].datos.fechaNacimiento.mes,
-						usuarios[pos].datos.fechaNacimiento.anio);
+			usuarios[pos].datos.fechaNacimiento.mes,
+			usuarios[pos].datos.fechaNacimiento.anio);
 }
-	
+
 void alta(usuario usuarios[],int &pos){
 	int repetido=-1;
 	printf("Ingrese el alias: ");
@@ -213,8 +217,8 @@ void gestionUsuarios(usuario usuarios[], int &pos){
 		}
 	}while(op < 1 || op > 4);
 	switch (op){
-		case 1:
-			alta(usuarios,pos);
-			break;
+	case 1:
+		alta(usuarios,pos);
+		break;
 	}
 }
