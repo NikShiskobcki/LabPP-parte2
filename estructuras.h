@@ -4,7 +4,7 @@
 #define MAXCANTJUGADORES 5
 
 typedef struct _string{
-	char texto[MAXLARGOSTRING];
+	char texto[MAXLARGOSTRING]={' '};
 	int largo;
 }string;
 
