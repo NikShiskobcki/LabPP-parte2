@@ -27,18 +27,21 @@ typedef struct _datosPersonales{
 	string alias;
 }datosPersonales;
 
+typedef struct _apuesta{
+	//int ronda;
+	int saldoInicial;
+	bool acerto;
+	int montoApostado;
+	int saldoResultante;
+}apuesta;
+
 typedef struct _usuario{
 	datosPersonales datos;
 	int saldo;
 	bool activo;
 	int aciertosSeguidos;
+	apuesta apuestasPorJugador[20];
+	int posApuesta;
 }usuario;
 
-typedef struct _apuesta{
-	string aliasJ;
-	int saldoJ;
-	bool acerto;
-	int montoApostado;
-	int saldoResultante;
-}apuesta;
 #endif
