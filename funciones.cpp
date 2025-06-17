@@ -21,7 +21,6 @@ int menu(){
 	}while(op < 1 || op > 4);
 	return op;	
 }
-	
 //Validaciones ***************************************************
 
 //Valida ci segun el digito verificador; 
@@ -53,35 +52,34 @@ bool fechaValida(fecha fAux){
 		valida = false;
 	}
 	switch (fAux.mes){
-		case 1: case 3: case 5: case 7: case 8: case 10: case 12:
-			if (fAux.dia > 31 || fAux.dia < 1){
-				valida = false;
-			}
-			break;
-		case 4: case 6: case 9: case 11:
-			if (fAux.dia > 30 || fAux.dia < 1){
-				valida = false;
-			}
-			break;
-		case 2:
-			if (fAux.dia > 28 || fAux.dia < 1){
-				valida = false;
-			}
-			if (fAux.dia == 29 && fAux.anio%4==0){
-				valida=true;
-			}
-			break;
-		default:
+	case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+		if (fAux.dia > 31 || fAux.dia < 1){
 			valida = false;
-			break;
+		}
+		break;
+	case 4: case 6: case 9: case 11:
+		if (fAux.dia > 30 || fAux.dia < 1){
+			valida = false;
+		}
+		break;
+	case 2:
+		if (fAux.dia > 28 || fAux.dia < 1){
+			valida = false;
+		}
+		if (fAux.dia == 29 && fAux.anio%4==0){
+			valida=true;
+		}
+		break;
+	default:
+		valida = false;
+		break;
 	}
 	if (!valida){
-	printf("Fecha incorrecta, vuelva a ingresarla\n");
+		printf("Fecha incorrecta, vuelva a ingresarla\n");
 	}
 	return valida;
 }
 //Fin validaciones ************************************************
-
 	
 //Ingresos ********************************************************
 string ingresoTexto(){
@@ -94,7 +92,7 @@ string ingresoTexto(){
 		if (cAux!='\n'){
 			textoAux.texto[i]=cAux;
 		}else{
-				break;
+			break;
 		}
 	}
 	textoAux.largo=i;
@@ -143,9 +141,11 @@ int buscarAlias(string auxAlias, usuario usuarios[],int pos){
 bool confirmar(){
 	__fpurge(stdin);
 	char c;
-	printf("Confirma datos? s/n ");
-	scanf("%c", &c);
-	__fpurge(stdin);
+	do {
+		scanf("%c", &c);
+		__fpurge(stdin);
+	}while(c=='\n');
+	
 	if (c=='S' || c == 's'){
 		return true;
 	}else{
@@ -171,9 +171,7 @@ void mostrarUsuario(usuario usuarios[], int pos){
 	for (int i=0;i< usuarios[pos].datos.alias.largo;i++){
 		putchar(usuarios[pos].datos.alias.texto[i]);
 	}
-
 }
-
 	
 //Opcion 1 del submenu Gestion de Usuarios (op 1 - 1)
 //Verifica que la CI sea valida al igual que la fecha de nacimiento
@@ -192,6 +190,7 @@ void alta(usuario usuarios[],int &pos){
 		string nombreAux = ingresoTexto();
 		printf ("Ingrese Apellido: ");
 		string apellidoAux = ingresoTexto();
+		printf("Confirmar Datos? (s/n): ");
 		if (confirmar()){
 			usuarios[pos].datos.alias = auxAlias;
 			usuarios[pos].datos.ci = ciAux;
@@ -201,10 +200,10 @@ void alta(usuario usuarios[],int &pos){
 			usuarios[pos].saldo = 1000;
 			usuarios[pos].activo = true;
 			usuarios[pos].aciertosSeguidos = 0;
+			usuarios[pos].posApuesta = 0;
 			pos++;
 			printf("El usuario se ha creado correctamente\n");
 			mostrarUsuario(usuarios,pos-1);
-			
 			printf("\nFecha de Nacimiento: ");
 			printf("%d/%d/%d",usuarios[pos-1].datos.fechaNacimiento.dia,
 				   usuarios[pos-1].datos.fechaNacimiento.mes,
@@ -219,7 +218,7 @@ void alta(usuario usuarios[],int &pos){
 	getchar();
 	system("clear");	
 }
-	
+
 //Opcion 3 del submenu Gestion de Usuarios(op 1 - 3)
 void modificar(usuario usuarios[],int pos){
 	string aliasAux;
@@ -236,23 +235,22 @@ void modificar(usuario usuarios[],int pos){
 		string nombreAux = ingresoTexto();
 		printf ("Ingrese Apellido: ");
 		string apellidoAux = ingresoTexto();
+		printf("Confirmar cambios? (s/n): ");
 		if (confirmar()){
-			usuarios[pos].datos.alias = aliasAux;
-			usuarios[pos].datos.ci = ciAux;
-			usuarios[pos].datos.fechaNacimiento = fechaAux;
-			usuarios[pos].datos.nombre = nombreAux;
-			usuarios[pos].datos.apellido = apellidoAux;
+			usuarios[i].datos.ci = ciAux;
+			usuarios[i].datos.fechaNacimiento = fechaAux;
+			usuarios[i].datos.nombre = nombreAux;
+			usuarios[i].datos.apellido = apellidoAux;
 			mostrarUsuario(usuarios,i);
 			
 			printf("\nFecha de Nacimiento: ");
-			printf("%d/%d/%d",usuarios[pos].datos.fechaNacimiento.dia,
-				   usuarios[pos].datos.fechaNacimiento.mes,
-				   usuarios[pos].datos.fechaNacimiento.anio);
+			printf("%d/%d/%d",usuarios[i].datos.fechaNacimiento.dia,
+								usuarios[i].datos.fechaNacimiento.mes,
+								usuarios[i].datos.fechaNacimiento.anio);
 			printf("\nEl usuario se modifico correctamente\n");
 		}else{
 			printf("\nEl usuario no se ha modificado\n");
 		}
-		
 	}else{
 		printf("No existe un usuario con ese Alias\n");
 	}
@@ -260,7 +258,7 @@ void modificar(usuario usuarios[],int pos){
 	getchar();
 	system("clear");
 }
-	
+
 //Submenu Gestion de usuarios(op 1)
 void gestionUsuarios(usuario usuarios[], int &pos){
 	int op;
@@ -282,12 +280,12 @@ void gestionUsuarios(usuario usuarios[], int &pos){
 		system("clear");
 	}while(op < 1 || op > 4);
 	switch (op){
-		case 1:
-			alta(usuarios,pos);
-			break;
-		case 3:
-			modificar(usuarios,pos);
-			break;
+	case 1:
+		alta(usuarios,pos);
+		break;
+	case 3:
+		modificar(usuarios,pos);
+		break;
 	}
 }
 	
@@ -297,7 +295,7 @@ void copiarUsuarios(usuario usuarios[],usuario usuariosOrdenados[], int pos){
 		usuariosOrdenados[i]=usuarios[i];
 	}
 }
-	
+
 //bubble sort	
 void ordenar(usuario usuariosOrdenados[],int pos){
 	usuario aux;
@@ -310,8 +308,7 @@ void ordenar(usuario usuariosOrdenados[],int pos){
 			}
 		}
 	}
-}
-	
+}	
 //Muestra el listado de todos los jugadores activos
 //ci nombre apellido alias saldo actual
 //ordenado por alias ascendente
@@ -329,11 +326,43 @@ void listadoJugadores(usuario usuarios[],int pos){
 	printf("\nPresione enter para continuar");
 	getchar();getchar();
 	system("clear");
-	
+}
+//Muestra apuestas cronologicas segun alias
+void listadoApuestasPorJugador(usuario usuarios[], int posUsuarios){
+	string aliasAux;
+	int index;
+	printf("Ingrese alias: ");
+	aliasAux = ingresoTexto();
+	index = buscarAlias(aliasAux,usuarios,posUsuarios);
+	if (index!=-1){
+		printf("\nAlias: ");
+		for (int i=0;i< usuarios[index].datos.alias.largo;i++){
+			putchar(usuarios[index].datos.alias.texto[i]);
+		}
+		putchar('\n');
+		printf("Saldo: %d", usuarios[index].saldo);
+		putchar('\n');
+		printf("ACERTO       MONTO APOSTADO    SALDO RESULTANTE\n");
+		for (int i=0; i<usuarios[index].posApuesta;i++){
+			if (usuarios[index].apuestasPorJugador[i].acerto == true){
+				printf("   SI    ");
+			}else{
+				printf("   NO    ");
+			}
+			printf("      %d     ", usuarios[index].apuestasPorJugador[i].montoApostado);
+			printf("            %d     ", usuarios[index].apuestasPorJugador[i].saldoResultante);
+			putchar('\n');
+		}
+	}else{
+		printf("El alias que ingreso no existe\n");
+	}
+		printf("Presione enter para volver al menu\n");
+		getchar();
+		system("clear");
 }
 
 //Submenu Consultas (op 2)
-void consultas(usuario usuarios[],apuesta apuestas[],int posUsuarios,int posApuestas){
+void consultas(usuario usuarios[],int posUsuarios){
 	int op;
 	system("clear");
 	printf("Bienvenido a Consultas\n");
@@ -352,11 +381,113 @@ void consultas(usuario usuarios[],apuesta apuestas[],int posUsuarios,int posApue
 		system("clear");
 	}while(op < 1 || op > 4);
 	switch (op){
-		case 1:
-			listadoJugadores(usuarios,posUsuarios);
-			break;
-	//case 3:
-		//listadoApuestasPorJugador(alias,apuestas,posApuestas);
-		//break;
+	case 1:
+		listadoJugadores(usuarios,posUsuarios);
+		break;
+	case 3:
+		listadoApuestasPorJugador(usuarios,posUsuarios);
+		break;
 	}
+}
+
+int generarCopa(int i){
+	return (i%3)+1;
+}	
+
+void mostrarCopas(char c, int copa){
+	switch(copa){
+	case 1:
+		printf("%c O O\n", c);
+		break;
+	case 2:
+		printf("O %c O\n", c);
+		break;
+	case 3:
+		printf("O O %c\n", c);
+		break;
+	}
+	printf("\n");
+}
+	
+void apostar(usuario usuarios[], int posUsuarios, int &ronda){
+	string auxAlias;
+	bool confirma=true;
+	int index = -1;
+	int montoAux;
+	
+	printf("Ingrese su alias: ");
+	auxAlias = ingresoTexto();
+	index= buscarAlias(auxAlias, usuarios, posUsuarios);
+	if (index == -1){
+		printf("El alias que ingreso no existe\n");
+		printf("Presione enter para volver al menu\n");
+		getchar();
+		confirma=false;
+	}else if (!usuarios[index].activo){
+		printf("El alias no esta activo\n");
+		confirma=false;
+		printf("Presione enter para volver al menu\n");
+		getchar();
+	}
+	
+	while(confirma){
+		if(usuarios[index].saldo <= 0){
+			printf("Usted no tiene saldo para continuar jugando\n");
+			printf("Presione enter para volver al menu\n");
+			confirma=false;
+			getchar();
+		}else{
+			int posicionApuesta = usuarios[index].posApuesta;
+			int copa = generarCopa(ronda);
+			int posElegida;// posicion que quiere elegir el usuario
+			do{
+				printf("\nO O O\n1 2 3\n");
+				printf("Copa?: ");
+				scanf("%d", &posElegida);
+			}while(posElegida < 1 || posElegida > 3);
+			do{
+				printf("Apuesta?: ");
+				scanf("%d", &montoAux);
+				if(montoAux <= 0 || montoAux > usuarios[index].saldo){
+					printf("Incorrecto ingrese de nuevo\n");
+				}
+			} while(montoAux <= 0 || montoAux > usuarios[index].saldo);
+			usuarios[index].apuestasPorJugador[posicionApuesta].montoApostado = montoAux;
+			getchar();
+			
+			usuarios[index].apuestasPorJugador[posicionApuesta].saldoInicial = usuarios[index].saldo;
+			
+			if(posElegida == copa){
+				if (usuarios[index].aciertosSeguidos==2){
+					usuarios[index].apuestasPorJugador[posicionApuesta].acerto = false;
+					usuarios[index].saldo -= montoAux;
+					usuarios[index].aciertosSeguidos = 0;
+					mostrarCopas(' ', copa);
+					printf("No ha acertado\n");
+					
+				}else{
+					usuarios[index].apuestasPorJugador[posicionApuesta].acerto = true;
+					usuarios[index].saldo += montoAux;
+					usuarios[index].aciertosSeguidos++;
+					mostrarCopas('.', copa);
+					printf("Ha acertado!\n");
+				}
+			}else{
+				usuarios[index].apuestasPorJugador[posicionApuesta].acerto = false;
+				usuarios[index].saldo -= montoAux;
+				usuarios[index].aciertosSeguidos = 0;
+				mostrarCopas('.', copa);
+				printf("No ha acertado\n");
+			}
+			usuarios[index].apuestasPorJugador[posicionApuesta].saldoResultante = usuarios[index].saldo;
+			printf("Saldo Final: $%d\n", usuarios[index].saldo);
+			
+			usuarios[index].posApuesta++;
+			
+			ronda++;
+			printf("Desea seguir apostando? ");
+			confirma=confirmar();
+		}
+	};
+	system("clear");
 }
