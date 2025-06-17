@@ -6,9 +6,8 @@ using namespace std;
 
 int main (int argc, char *argv[]) {
 	usuario usuarios[MAXCANTJUGADORES];
-	apuesta apuestas[20];
 	int posUsuarios = 0;
-	int posApuestas = 0;
+	int ronda = 0;
 	
 	int op;
 	printf("**********Bienvenido!**********\n");
@@ -19,9 +18,14 @@ int main (int argc, char *argv[]) {
 			gestionUsuarios(usuarios,posUsuarios);
 			break;
 		case 2:
-			consultas(usuarios,apuestas,posUsuarios,posApuestas);
+			consultas(usuarios,posUsuarios);
+			break;
+		case 3:
+			apostar(usuarios,posUsuarios,ronda);
 			break;
 		}
 	} while(op!=4);
+	system("clear");
+	printf("Gracias por jugar! :)");
 	return 0;
 }
